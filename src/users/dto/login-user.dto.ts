@@ -7,11 +7,12 @@ import {
 } from 'class-validator';
 
 export class LoginUserDto {
+  //! username
   @IsString()
   @MinLength(3)
-  //! username
   username: string;
 
+  //! password
   @IsString()
   @MinLength(8)
   @MaxLength(50)
@@ -19,10 +20,9 @@ export class LoginUserDto {
     message:
       'The password must have a Uppercase, lowercase letter and a number',
   })
-  //! password
   password: string;
 
-  @IsEmail()
   //! email
+  @IsEmail()
   email: string;
 }

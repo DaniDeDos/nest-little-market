@@ -6,17 +6,18 @@ import {
   MinLength,
 } from 'class-validator';
 
+//! fullname
 export class RegisterUserDto {
   @IsString()
-  @MinLength(3)
-  //! username
-  username?: string;
-
-  @IsString()
   @MinLength(30)
-  //! fullname
   fullname: string;
 
+  //! username
+  @IsString()
+  @MinLength(3)
+  username?: string;
+
+  //! password
   @IsString()
   @MinLength(8)
   @MaxLength(50)
@@ -24,10 +25,9 @@ export class RegisterUserDto {
     message:
       'The password must have a Uppercase, lowercase letter and a number',
   })
-  //! password
   password: string;
 
-  @IsEmail()
   //! email
-  email?: string;
+  @IsEmail()
+  email: string;
 }

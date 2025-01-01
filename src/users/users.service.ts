@@ -13,7 +13,7 @@ import * as bcrypt from 'bcrypt';
 
 import { RegisterUserDto, LoginUserDto } from './dto';
 import { User } from './entities/user.entity';
-import { JwtPayload } from './interfaces/jwt-payload.interface';
+import { JwtPayload } from '../auth/interfaces/jwt-payload.interface';
 
 @Injectable()
 export class UsersService {
@@ -62,8 +62,9 @@ export class UsersService {
       where: username ? { username } : { email },
       select: {
         id: true,
-        username: true,
         fullname: true,
+        username: true,
+        password: true,
         email: true,
       },
     });
@@ -81,13 +82,19 @@ export class UsersService {
     };
   }
 
+  async checkAuthStatus(user: User) {
+    return {
+      ...user,
+      token: this.getJwtToken({ id: user.id }),
+    };
+  }
+
   private getJwtToken(payload: JwtPayload) {
     const token = this.jwtService.sign(payload);
     return token;
   }
 
   handleErrors(error: any): never {
-    //* console.log(error);
     //TODO: Validar username
     if (error.code === '23502' && error.column.includes('username'))
       throw new BadRequestException(`(username) is required`);
@@ -106,6 +113,7 @@ export class UsersService {
 
     if (error.code === '23505') throw new BadRequestException(error.detail);
 
+    //* console.log(error);
     this.logger.log(error);
     throw new InternalServerErrorException('Please check server logs!');
   }

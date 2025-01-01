@@ -3,47 +3,46 @@ import {
   BeforeUpdate,
   Column,
   Entity,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
 @Entity('users')
 export class User {
-  @PrimaryGeneratedColumn('uuid')
   //! id
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('text')
-  //! username
-  username: string;
-
-  @Column('text')
   //! fullname
+  @Column('text')
   fullname: string;
 
+  //! username
+  @Column('text')
+  username: string;
+
+  //! password
   @Column('text', {
     select: false,
   })
-  //! password
   password: string;
 
+  //! email
   @Column('text', {
     unique: true,
   })
-  //! email
   email: string;
 
+  //! role_id
   @Column('text', {
     array: true,
-    default: ['user'],
+    default: ['gest'],
   })
-  //! role_id
   role_id: string[];
 
-  /* 
-  TODO:
   @BeforeInsert()
   checkFieldsBeforeInsert() {
+    this.fullname = this.fullname.toLowerCase().trim();
+    this.username = this.username.toLowerCase().trim();
     this.email = this.email.toLowerCase().trim();
   }
 
@@ -51,5 +50,4 @@ export class User {
   checkFieldsBeforeUpdate() {
     this.checkFieldsBeforeInsert();
   }
-    */
 }
