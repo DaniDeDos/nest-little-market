@@ -6,8 +6,8 @@ import {
   MinLength,
 } from 'class-validator';
 
-//! fullname
 export class RegisterUserDto {
+  //! fullname
   @IsString()
   @MinLength(30)
   fullname: string;
