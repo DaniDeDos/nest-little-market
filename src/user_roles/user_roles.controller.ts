@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Query,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { UserRolesService } from './user_roles.service';
 import { CreateUserRoleDto } from './dto/create-user_role.dto';
@@ -31,21 +32,22 @@ export class UserRolesController {
     return this.userRolesService.findAll(paginationDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userRolesService.findOne(+id);
+  @Get(':term')
+  @Auth(Role.admin)
+  findOne(@Param('term') term: string) {
+    return this.userRolesService.findOne(term);
   }
 
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateUserRoleDto: UpdateUserRoleDto,
   ) {
-    return this.userRolesService.update(+id, updateUserRoleDto);
+    return this.userRolesService.update(id, updateUserRoleDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.userRolesService.remove(+id);
+    return this.userRolesService.remove(id);
   }
 }
