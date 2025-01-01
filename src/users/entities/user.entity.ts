@@ -17,6 +17,10 @@ export class User {
   //! username
   username: string;
 
+  @Column('text')
+  //! fullname
+  fullname: string;
+
   @Column('text', {
     select: false,
   })
