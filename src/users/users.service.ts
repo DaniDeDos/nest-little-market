@@ -14,6 +14,7 @@ import * as bcrypt from 'bcrypt';
 import { RegisterUserDto, LoginUserDto } from './dto';
 import { User } from './entities/user.entity';
 import { JwtPayload } from '../auth/interfaces/jwt-payload.interface';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class UsersService {
@@ -22,6 +23,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+
     private readonly jwtService: JwtService,
   ) {}
   //! Register
@@ -29,10 +31,13 @@ export class UsersService {
     try {
       const { password, ...newUserData } = createUserDto;
 
+      // Crear el nuevo usuario
       const user = this.userRepository.create({
         ...newUserData,
         password: bcrypt.hashSync(password, 10),
       });
+
+      // Guardar el usuario en la base de datos
       await this.userRepository.save(user);
       delete user.password;
 
@@ -70,16 +75,27 @@ export class UsersService {
     });
 
     //TODO: if bad username || email
-    if (!user) throw new UnauthorizedException(`Credentials are not valid`);
+    if (!user) throw new UnauthorizedException(`credentials are not valid`);
 
     //TODO: if bad password
     if (!bcrypt.compareSync(password, user.password))
-      throw new UnauthorizedException(`Credentials are not valid`);
+      throw new UnauthorizedException(`credentials are not valid`);
 
     return {
       ...user,
       token: this.getJwtToken({ id: user.id }),
     };
+  }
+
+  //! findAll
+  async findAll(paginationDto: PaginationDto) {
+    const { limit = 10, offset = 0 } = paginationDto;
+
+    const users = await this.userRepository.find({
+      take: limit,
+      skip: offset,
+    });
+    return users;
   }
 
   async checkAuthStatus(user: User) {
@@ -95,6 +111,7 @@ export class UsersService {
   }
 
   handleErrors(error: any): never {
+    console.log(error);
     //TODO: Validar username
     if (error.code === '23502' && error.column.includes('username'))
       throw new BadRequestException(`(username) is required`);
@@ -115,6 +132,6 @@ export class UsersService {
 
     //* console.log(error);
     this.logger.log(error);
-    throw new InternalServerErrorException('Please check server logs!');
+    throw new InternalServerErrorException('Ups!, Please check server logs!');
   }
 }

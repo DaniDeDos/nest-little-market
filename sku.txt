@@ -1,0 +1,21 @@
+Instala nanoid:
+npm install nanoid
+Crea una función para generar el SKU en tu servicio o controlador:
+import { nanoid } from 'nanoid';
+
+export class ProductService {
+  async generateSKU() {
+    const sku = nanoid(10); // Genera un código de 10 caracteres
+    return sku;
+  }
+
+  async createProduct(productData: Partial<Product>) {
+    const sku = await this.generateSKU();
+    
+    const product = new Product();
+    Object.assign(product, productData);
+    product.sku = sku;
+    
+    return product.save();
+  }
+}

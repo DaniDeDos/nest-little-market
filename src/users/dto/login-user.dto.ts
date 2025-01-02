@@ -1,5 +1,6 @@
 import {
   IsEmail,
+  IsOptional,
   IsString,
   Matches,
   MaxLength,
@@ -10,7 +11,8 @@ export class LoginUserDto {
   //! username
   @IsString()
   @MinLength(3)
-  username: string;
+  @IsOptional()
+  username?: string;
 
   //! password
   @IsString()
@@ -24,5 +26,6 @@ export class LoginUserDto {
 
   //! email
   @IsEmail()
-  email: string;
+  @IsOptional()
+  email?: string;
 }

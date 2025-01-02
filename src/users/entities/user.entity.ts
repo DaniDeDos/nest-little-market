@@ -2,8 +2,10 @@ import {
   BeforeInsert,
   BeforeUpdate,
   Column,
+  CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity('users')
@@ -37,7 +39,15 @@ export class User {
     array: true,
     default: ['gest'],
   })
-  role_id: string[];
+  role_id?: string[];
+
+  //! createdAt
+  @CreateDateColumn()
+  createdAt: Date;
+
+  //! updatedAt
+  @Column('date', { nullable: true, default: null })
+  updatedAt: Date;
 
   @BeforeInsert()
   checkFieldsBeforeInsert() {
